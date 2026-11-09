@@ -1,0 +1,29 @@
+# Start:  docker compose up -d
+# Erstes Einrichten:  docker compose run --rm werkzeug npm run db:migrate
+# Demodaten (löscht alles!):  docker compose run --rm werkzeug npm run db:seed
+services:
+  datenbank:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: fk_planer
+      POSTGRES_USER: fk
+      POSTGRES_PASSWORD: ${DB_PASSWORT:?Bitte DB_PASSWORT in .env setzen}
+    volumes:
+      - daten:/var/lib/postgresql/data
+  app:
+    build: { context: ., target: betrieb }
+    restart: unless-stopped
+    depends_on: [datenbank]
+    environment:
+      DATABASE_URL: postgres://fk:${DB_PASSWORT}@datenbank:5432/fk_planer
+    ports:
+      - "127.0.0.1:3000:3000"   # nur lokal; davor einen Reverse-Proxy mit HTTPS betreiben
+  werkzeug:
+    build: { context: ., target: werkzeug }
+    profiles: ["werkzeug"]
+    depends_on: [datenbank]
+    environment:
+      DATABASE_URL: postgres://fk:${DB_PASSWORT}@datenbank:5432/fk_planer
+volumes:
+  daten:

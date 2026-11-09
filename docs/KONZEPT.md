@@ -154,4 +154,7 @@ Rückfragen während der Umsetzung kommen, sobald eine Regel unklar ist.
 
 - **Datenbankzugriff mit Drizzle statt Prisma:** Drizzle ist reines TypeScript ohne zusätzlich herunterzuladende Programmdateien; das vereinfacht Betrieb und Hosting. Fachlich ohne Auswirkung.
 - **Aufteilung trotz geringer Ersparnis, wenn sonst Fälle wegfallen:** Passt eine Gruppe nicht ins Zeitfenster oder ist eine benötigte Person nicht die ganze Sitzung da, werden 2 Gruppen gebildet, auch wenn die Mindestersparnis nicht erreicht wird – statt Fälle zu streichen.
+- **Fairnesszeitraum:** Die Fairnessübersicht reicht bis heute oder bis zum letzten veröffentlichten Termin, falls dieser in der Zukunft liegt – veröffentlichte Teilnahmen zählen also sofort.
+- **Fallkürzel:** muss mindestens eine Ziffer enthalten, keine Leerzeichen (technischer Schutz vor Klarnamen).
+- **Personen werden nicht gelöscht**, sondern über „Im Team bis“ und Kontosperre deaktiviert, damit die Statistik stimmig bleibt.
 - **Teilweise Abwesenheit:** Wer nicht die ganze Sitzung über da ist, kann (nach Modell A) nicht eingeplant werden. Betrifft das eine Pflichtperson, wird der betroffene Fall auf einen anderen Termin vorgeschlagen.

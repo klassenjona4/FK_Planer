@@ -12,8 +12,9 @@ import {
   index,
   integer,
   jsonb,
-  pgEnum,
-  pgTable,
+  pgEnum as pgEnumStandard,
+  pgSchema,
+  pgTable as pgTableStandard,
   primaryKey,
   real,
   text,
@@ -22,6 +23,15 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
+
+/**
+ * Optionales eigenes Datenbankschema (z. B. DATABASE_SCHEMA=fk bei Supabase, damit die Tabellen
+ * nicht über die öffentliche Supabase-API erreichbar sind). Ohne Angabe: Standardschema „public“.
+ */
+const schemaName = process.env.DATABASE_SCHEMA;
+const eigenesSchema = schemaName && schemaName !== "public" ? pgSchema(schemaName) : null;
+const pgTable = (eigenesSchema ? eigenesSchema.table.bind(eigenesSchema) : pgTableStandard) as typeof pgTableStandard;
+const pgEnum = (eigenesSchema ? eigenesSchema.enum.bind(eigenesSchema) : pgEnumStandard) as typeof pgEnumStandard;
 
 const id = () => uuid("id").primaryKey().default(sql`gen_random_uuid()`);
 const erstelltAm = () => timestamp("erstellt_am", { withTimezone: true }).notNull().defaultNow();

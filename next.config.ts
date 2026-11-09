@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
   serverExternalPackages: ["pdfkit", "@node-rs/argon2", "pg"],
+  // Schriftdateien für den PDF-Export mit ausliefern (werden zur Laufzeit gelesen)
+  outputFileTracingIncludes: {
+    "/export/plan/[tagId]/pdf": ["./assets/schriften/**", "./node_modules/pdfkit/js/data/**"],
+  },
   async headers() {
     return [{ source: "/:path*", headers: sicherheitsHeader }];
   },

@@ -1,6 +1,6 @@
 # FK-Planer – Konzept zur Freigabe
 
-Stand: 09.11.2026 · Status: **Entwurf, wartet auf Freigabe**
+Stand: 09.11.2026 · Status: **Freigegeben am 09.11.2026** (alle Vorschläge übernommen; Konferenztag Dienstag, Uhrzeit variabel)
 
 Dieses Dokument enthält Datenmodell, Annahmen, Planungsalgorithmus und Umsetzungsplan.
 Die offenen Fragen stehen in Abschnitt 6. Jede Frage hat einen Vorschlag; wird dieser
@@ -31,7 +31,7 @@ freigegeben, gilt er als Annahme. Es wird erst nach Freigabe programmiert.
 8. Für Abwesenheiten wird **kein Grund** gespeichert (Datensparsamkeit).
 9. Keine Tracker, keine externen Schriftarten, keine CDN-Ressourcen; PDF und .ics werden auf dem eigenen Server erzeugt.
 
-## 3. Datenmodell (PostgreSQL, Prisma)
+## 3. Datenmodell (PostgreSQL, Drizzle ORM)
 
 ```
 Organisation        id, name
@@ -125,8 +125,33 @@ Teilnahmen. Ausgabe: Planvorschlag, Begründungen, Verstöße, Hinweise mit Lös
 
 Rückfragen während der Umsetzung kommen, sobald eine Regel unklar ist.
 
-## 6. Offene Fragen
+## 6. Entscheidungen (Antworten auf die Rückfragen)
 
-Siehe Chat bzw. Liste unten – die Antworten werden hier nachgetragen.
+| Nr. | Thema | Entscheidung |
+|---|---|---|
+| 1 | Teilnahmemodell | **Modell A:** Jede Gruppe ist eine durchgehende Sitzung; alle Personen einer Gruppe nehmen an allen Fällen der Gruppe teil. Mindestzahl gilt pro Gruppe. Eine Person gehört am Tag höchstens einer Gruppe an. |
+| 2 | Zähleinheit | 1 Teilnahme je Gruppe ohne eigenen Fall; Minuten nur zur Information. |
+| 3 | „Erforderlich“ bei fremdem Fall | Zählt als Teilnahme ohne eigenen Fall (eigene Spalte). |
+| 4 | Normalisierung | Quote = Teilnahmen ohne eigenen Fall ÷ (Stellenanteil × Anteil der Konferenztage im Zeitraum, an denen die Person beschäftigt und nicht ganztägig abwesend war). |
+| 5 | Auffüllen | Nur bis zur Mindestzahl. |
+| 6 | Konferenztag | **Dienstag.** Die Uhrzeit ist variabel: Jeder Termin hat einen eigenen Beginn; ein Ende ist optional. Ohne Ende dauert die Konferenz so lange wie nötig. |
+| 7 | Zeitfenster überschritten | Zuletzt gereihte Fälle bleiben „nicht eingeplant“ und erhalten den nächsten Termin als Vorschlag. |
+| 8 | Wunschtermin | Bestimmter Dienstag oder Zeitraum (frühestens/spätestens); die App nimmt den frühesten passenden Termin. |
+| 9 | Dringend | Kennzeichen „dringend“ ohne Inhalt; wird zuerst eingeplant. |
+| 10 | Frist | Nach Fristende weiter möglich, als „verspätet“ markiert. |
+| 11 | Wechselzeit | 5 Minuten, einstellbar. |
+| 12 | Vorgesetzte | Mehrere möglich (Rang 1 Leitung, 2 Vertretung …). „Vorgesetzt erforderlich“ = eine von ihnen, bevorzugt nach Rang. |
+| 13 | Rollen | Eine Person kann beide Rollen haben (Rolle PLANUNG umfasst alle Rechte von MITARBEITEND). |
+| 14 | Eintragen für andere | Nur die Planung. |
+| 15 | Ausnahme vom Auffüllen | Häkchen pro Person. |
+| 16 | Abwesenheiten | Ganztägig, optional mit Uhrzeit; kein Grund gespeichert. |
+| 17 | Login | Eigenes Login (E-Mail + Passwort), SSO später möglich. |
+| 18 | Löschfristen | Fallkürzel und Notiz 3 Monate nach der Konferenz löschen; Teilnahmen bleiben ohne Fallbezug. |
+| 19 | E-Mail | Kein Versand in Version 1. |
+| 20 | Hosting | Docker Compose, Anbieterwahl (EU) später. |
 
-*(wird nach Freigabe ergänzt)*
+### Während der Umsetzung getroffene Festlegungen (zur Bestätigung)
+
+- **Datenbankzugriff mit Drizzle statt Prisma:** Drizzle ist reines TypeScript ohne zusätzlich herunterzuladende Programmdateien; das vereinfacht Betrieb und Hosting. Fachlich ohne Auswirkung.
+- **Aufteilung trotz geringer Ersparnis, wenn sonst Fälle wegfallen:** Passt eine Gruppe nicht ins Zeitfenster oder ist eine benötigte Person nicht die ganze Sitzung da, werden 2 Gruppen gebildet, auch wenn die Mindestersparnis nicht erreicht wird – statt Fälle zu streichen.
+- **Teilweise Abwesenheit:** Wer nicht die ganze Sitzung über da ist, kann (nach Modell A) nicht eingeplant werden. Betrifft das eine Pflichtperson, wird der betroffene Fall auf einen anderen Termin vorgeschlagen.

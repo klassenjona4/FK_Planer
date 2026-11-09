@@ -22,7 +22,7 @@ const SEITEN = ["/", "/fall-eintragen", "/faelle", "/plan", "/meine-termine", "/
   await page.click("form button[type=submit]");
   await page.waitForURL(BASIS + "/");
   await page.goto(BASIS + "/plan");
-  const planLink = await page.locator("table a").first().getAttribute("href");
+  const planLink = await page.locator("main article a").first().getAttribute("href");
   for (const pfad of [...SEITEN, planLink]) {
     await page.goto(BASIS + pfad);
     const r = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();

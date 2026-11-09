@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Seitenkopf } from "@/components/Seitenkopf";
 import { and, eq } from "drizzle-orm";
 import { db, schema as s } from "@/db";
 import { FallFormular } from "@/components/FallFormular";
@@ -33,8 +33,7 @@ export default async function FallBearbeitenSeite({ params }: { params: Promise<
 
   return (
     <>
-      <p><Link href="/faelle">← Zurück zur Übersicht</Link></p>
-      <h1>Fall {f.fallkuerzel} bearbeiten</h1>
+      <Seitenkopf titel={`Fall ${f.fallkuerzel} bearbeiten`} zurueck={{ href: "/faelle", text: "Zurück zur Übersicht" }} />
       {veroeffentlicht && !istPlanung(konto) ? (
         <div className="meldung info"><p>Dieser Fall steht bereits in einem veröffentlichten Plan. Für Änderungen wenden Sie sich bitte an die Planung.</p></div>
       ) : (

@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Seitenkopf } from "@/components/Seitenkopf";
 import { and, eq } from "drizzle-orm";
 import { db, schema as s } from "@/db";
 import { brauchtPlanung } from "@/lib/auth";
@@ -17,8 +17,7 @@ export default async function PersonBearbeiten({ params }: { params: Promise<{ i
   const [k] = await db.select().from(s.benutzerkonto).where(eq(s.benutzerkonto.personId, id));
   return (
     <>
-      <p><Link href="/einstellungen/personen">← Alle Personen</Link></p>
-      <h1>{p.vorname} {p.nachname} bearbeiten</h1>
+      <Seitenkopf titel={`${p.vorname} ${p.nachname} bearbeiten`} zurueck={{ href: "/einstellungen/personen", text: "Alle Personen" }} />
       <p className="hilfe">Personen werden nicht gelöscht, damit die Statistik stimmt. Tragen Sie bei Ausscheiden „Im Team bis“ ein und sperren Sie den Zugang.</p>
       <PersonFormular
         aktion={personSpeichernAktion.bind(null, p.id)}

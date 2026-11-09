@@ -1,4 +1,5 @@
 import { FallFormular } from "@/components/FallFormular";
+import { Seitenkopf } from "@/components/Seitenkopf";
 import { brauchtAnmeldung, istPlanung } from "@/lib/auth";
 import { terminAuswahl } from "@/lib/ansicht";
 import { ladePersonen, ladeTermine } from "@/lib/daten";
@@ -13,7 +14,7 @@ export default async function FallEintragenSeite() {
   const auswahl = terminAuswahl(termine);
   return (
     <>
-      <h1>Fall für die Fachkonferenz eintragen</h1>
+      <Seitenkopf titel="Fall eintragen" unterzeile="Melden Sie einen Fall für die Fachkonferenz an. Pflichtangaben sind 1 bis 6." />
       {auswahl.length === 0 ? (
         <div className="meldung warnung"><p>Es sind noch keine kommenden Konferenztermine angelegt. Bitte wenden Sie sich an die Planung.</p></div>
       ) : (

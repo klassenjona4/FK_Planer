@@ -4,6 +4,11 @@ Web-App für Team 2 des Jugendamts: Mitarbeitende tragen Fälle und Abwesenheite
 konfliktfreien, beschlussfähigen und fairen Fachkonferenzplan (1 oder 2 Gruppen). Die Planung prüft, ändert und
 veröffentlicht den Plan.
 
+![Startseite](docs/ansicht-start.png)
+
+Gestaltung: Seitenleiste mit Bereichen, Kennzahlen-Leiste, Filter-Chips und Board-Spalten mit Karten
+(helle Grautöne, grüner Akzent). Grundschrift 17 px, Kontrast nach WCAG 2.1 AA, ohne externe Schriftarten.
+
 Fachliche Entscheidungen, Datenmodell und Algorithmus: **[docs/KONZEPT.md](docs/KONZEPT.md)**
 
 ## Technik

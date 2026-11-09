@@ -1,4 +1,5 @@
 import { and, asc, eq, gte } from "drizzle-orm";
+import { Seitenkopf } from "@/components/Seitenkopf";
 import { db, schema as s } from "@/db";
 import { brauchtAnmeldung, istPlanung } from "@/lib/auth";
 import { ladePersonen } from "@/lib/daten";
@@ -20,16 +21,15 @@ export default async function AbwesenheitenSeite() {
 
   return (
     <>
-      <h1>Abwesenheiten</h1>
-      <p>Tragen Sie hier Urlaub, Fortbildung oder andere Abwesenheiten ein. An diesen Tagen werden Sie nicht eingeplant.</p>
-      <h2>Neue Abwesenheit</h2>
+      <Seitenkopf titel="Abwesenheiten" unterzeile="Urlaub, Fortbildung oder andere Abwesenheiten. An diesen Tagen werden Sie nicht eingeplant." />
+      <h2 className="abschnitt-titel">Neue Abwesenheit</h2>
       <AbwesenheitFormular
         personen={planung ? personen.map((p) => ({ id: p.id, name: personName(p) })) : undefined}
         eigenePersonId={konto.personId}
       />
-      <h2>{planung ? "Aktuelle und kommende Abwesenheiten im Team" : "Meine aktuellen und kommenden Abwesenheiten"}</h2>
+      <h2 className="abschnitt-titel">{planung ? "Aktuelle und kommende Abwesenheiten im Team" : "Meine aktuellen und kommenden Abwesenheiten"}</h2>
       {liste.length === 0 ? (
-        <p>Keine Abwesenheiten eingetragen.</p>
+        <div className="karte"><p className="leise">Keine Abwesenheiten eingetragen.</p></div>
       ) : (
         <div className="tabelle-huelle">
           <table className="tabelle-mobil">

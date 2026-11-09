@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PlanKarten, Zeittabelle } from "@/components/PlanAnsicht";
+import { KpiLeiste } from "@/components/Kpi";
+import { PlanKarten, Zeittabelle, planKpis } from "@/components/PlanAnsicht";
+import { Seitenkopf } from "@/components/Seitenkopf";
+import { Symbol } from "@/components/Symbole";
 import { brauchtAnmeldung, istPlanung } from "@/lib/auth";
 import { ladeFaelle, ladePersonen, ladePlan, ladePlanungsEingabe, ladeTermin, ladeVerlauf } from "@/lib/daten";
 import { fallInfos, namensListe } from "@/lib/fallinfo";
@@ -28,28 +31,24 @@ export default async function PlanTagSeite({ params }: { params: Promise<{ tagId
   const titel = `Fachkonferenz am ${datumLang(tag.datum)}`;
   const status = plan?.status ?? null;
 
+  const statusAbzeichen =
+    status === "VEROEFFENTLICHT" ? <span className="abzeichen veroeffentlicht">Veröffentlicht</span>
+    : status === "ENTWURF" ? <span className="abzeichen entwurf">{planung ? "Entwurf – noch nicht sichtbar für das Team" : "In Planung"}</span>
+    : <span className="abzeichen leer">Noch kein Plan</span>;
   const kopf = (
-    <>
-      <p><Link href="/plan">← Alle Termine</Link></p>
-      <h1>{titel}</h1>
-      <p>
-        Beginn {tag.beginn} Uhr{tag.ende ? `, geplantes Ende ${tag.ende} Uhr` : ""} ·{" "}
-        {status === "VEROEFFENTLICHT" ? (
-          <span className="abzeichen veroeffentlicht">Veröffentlicht</span>
-        ) : status === "ENTWURF" ? (
-          <span className="abzeichen entwurf">Entwurf – noch nicht sichtbar für das Team</span>
-        ) : (
-          <span className="abzeichen leer">Noch kein Plan</span>
-        )}
-      </p>
+    <Seitenkopf
+      titel={titel}
+      zurueck={{ href: "/plan", text: "Alle Termine" }}
+      unterzeile={<>Beginn {tag.beginn} Uhr{tag.ende ? `, geplantes Ende ${tag.ende} Uhr` : ""} · {statusAbzeichen}</>}
+    >
       {status === "VEROEFFENTLICHT" && (
-        <div className="knopfleiste">
-          <a className="knopf zweitrangig" href={`/export/plan/${tagId}/pdf`}>Als PDF herunterladen</a>
-          <a className="knopf zweitrangig" href={`/export/plan/${tagId}/ics`}>Meine Termine dieses Tages für Outlook (.ics)</a>
-          {planung && <a className="knopf zweitrangig" href={`/export/plan/${tagId}/ics?alle=1`}>Alle Gruppen für Outlook (.ics)</a>}
-        </div>
+        <>
+          <a className="knopf zweitrangig" href={`/export/plan/${tagId}/pdf`}><Symbol name="download" /> PDF</a>
+          <a className="knopf zweitrangig" href={`/export/plan/${tagId}/ics`}><Symbol name="plan" /> Meine Termine (.ics)</a>
+          {planung && <a className="knopf zweitrangig" href={`/export/plan/${tagId}/ics?alle=1`}><Symbol name="plan" /> Alle Gruppen (.ics)</a>}
+        </>
       )}
-    </>
+    </Seitenkopf>
   );
 
   if (!planung) {
@@ -60,6 +59,7 @@ export default async function PlanTagSeite({ params }: { params: Promise<{ tagId
           <div className="meldung info"><p>Der Plan für diesen Termin ist noch nicht veröffentlicht.</p></div>
         ) : (
           <>
+            <KpiLeiste titel="Kennzahlen dieses Plans" eintraege={planKpis(plan.entwurf, tag.ende)} />
             <div className="meldung info"><p>{plan.entwurf.gruppenBegruendung}</p></div>
             <Zeittabelle entwurf={plan.entwurf} faelle={faelle} namen={namen} eigenePersonId={konto.personId} />
             <PlanKarten entwurf={plan.entwurf} faelle={faelle} namen={namen} raeume={raeume} eigenePersonId={konto.personId} />
@@ -86,8 +86,8 @@ export default async function PlanTagSeite({ params }: { params: Promise<{ tagId
       />
       {verlauf.length > 0 && (
         <section aria-labelledby="verlauf-titel">
-          <h2 id="verlauf-titel">Änderungsverlauf</h2>
-          <ol className="karte">
+          <h2 id="verlauf-titel" className="abschnitt-titel">Änderungsverlauf</h2>
+          <ol className="karte" style={{ paddingLeft: "2.5rem" }}>
             {verlauf.map((v) => (
               <li key={v.id} style={{ marginBottom: "0.75rem" }}>
                 <strong>{zeitstempel(v.zeitpunkt)}</strong>

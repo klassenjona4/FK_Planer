@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { eq } from "drizzle-orm";
+import { Seitenkopf } from "@/components/Seitenkopf";
 import { db, schema as s } from "@/db";
 import { brauchtPlanung } from "@/lib/auth";
 import { ladeEinstellungen, ladeTermine } from "@/lib/daten";
@@ -22,12 +22,11 @@ export default async function TermineSeite() {
   const status = new Map(plaene.map((p) => [p.tagId, p.status]));
   return (
     <>
-      <p><Link href="/einstellungen">← Einstellungen</Link></p>
-      <h1>Konferenztermine</h1>
-      <p>Die Fachkonferenz findet dienstags statt. Beginn und Ende können für jeden Dienstag einzeln festgelegt werden.</p>
-      <h2>Dienstage anlegen</h2>
+      <Seitenkopf titel="Konferenztermine" zurueck={{ href: "/einstellungen", text: "Einstellungen" }}
+        unterzeile="Die Fachkonferenz findet dienstags statt. Beginn und Ende können für jeden Dienstag einzeln festgelegt werden." />
+      <h2 className="abschnitt-titel">Dienstage anlegen</h2>
       <TermineAnlegenFormular aktion={termineAnlegenAktion} beginn={e.standardBeginn} ende={e.standardEnde} ab={h} />
-      <h2>Kommende Termine</h2>
+      <h2 className="abschnitt-titel">Kommende Termine</h2>
       {kommende.length === 0 && <p>Keine kommenden Termine.</p>}
       {kommende.map((t) => {
         const titel = datumLang(t.datum);

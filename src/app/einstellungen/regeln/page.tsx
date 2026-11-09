@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { brauchtPlanung } from "@/lib/auth";
+import { Seitenkopf } from "@/components/Seitenkopf";
 import { ladeEinstellungen } from "@/lib/daten";
 import { regelnSpeichernAktion } from "../aktionen";
 import { RegelnFormular } from "../Formulare";
@@ -11,8 +11,7 @@ export default async function RegelnSeite() {
   const e = await ladeEinstellungen(konto.teamId);
   return (
     <>
-      <p><Link href="/einstellungen">← Einstellungen</Link></p>
-      <h1>Regeln für die Planung</h1>
+      <Seitenkopf titel="Regeln für die Planung" zurueck={{ href: "/einstellungen", text: "Einstellungen" }} />
       <RegelnFormular aktion={regelnSpeichernAktion} werte={e} />
     </>
   );

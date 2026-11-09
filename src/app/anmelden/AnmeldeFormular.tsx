@@ -19,7 +19,7 @@ export function AnmeldeFormular() {
         <label htmlFor="passwort">Passwort</label>
         <input id="passwort" name="passwort" type="password" autoComplete="current-password" required />
       </div>
-      <button type="submit" disabled={laeuft}>{laeuft ? "Bitte warten …" : "Anmelden"}</button>
+      <button type="submit" className="gruen-knopf breit" disabled={laeuft}>{laeuft ? "Bitte warten …" : "Anmelden"}</button>
     </form>
   );
 }

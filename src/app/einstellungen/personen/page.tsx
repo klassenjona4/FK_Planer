@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { Seitenkopf } from "@/components/Seitenkopf";
 import { eq } from "drizzle-orm";
 import { db, schema as s } from "@/db";
 import { brauchtPlanung } from "@/lib/auth";
+import { Avatar } from "@/components/Avatar";
 import { ladePersonen } from "@/lib/daten";
 import { heute } from "@/lib/zeit-server";
 import { personName } from "@/planung";
@@ -20,8 +22,7 @@ export default async function PersonenSeite() {
   const h = heute();
   return (
     <>
-      <p><Link href="/einstellungen">← Einstellungen</Link></p>
-      <h1>Personen im Team</h1>
+      <Seitenkopf titel="Personen im Team" zurueck={{ href: "/einstellungen", text: "Einstellungen" }} />
       <div className="tabelle-huelle">
         <table className="tabelle-mobil">
           <thead>
@@ -38,7 +39,7 @@ export default async function PersonenSeite() {
               const ausgeschieden = p.aktivBis && p.aktivBis < h;
               return (
                 <tr key={p.id}>
-                  <td data-titel="Name">{personName(p)}{ausgeschieden && <span className="grund">nicht mehr im Team</span>}</td>
+                  <td data-titel="Name"><span className="person-zelle"><Avatar name={personName(p)} groesse="klein" />{personName(p)}</span>{ausgeschieden && <span className="grund">nicht mehr im Team</span>}</td>
                   <td data-titel="Stellenumfang" className="zahl">{Math.round(p.stellenanteil * 100)} %</td>
                   <td data-titel="Funktion">
                     {p.istVorgesetzt ? (p.vorgesetztRang === 1 ? "Teamleitung" : "Vertretung") : "Fachkraft"}
@@ -54,7 +55,7 @@ export default async function PersonenSeite() {
           </tbody>
         </table>
       </div>
-      <h2>Neue Person anlegen</h2>
+      <h2 className="abschnitt-titel">Neue Person anlegen</h2>
       <PersonFormular aktion={personSpeichernAktion.bind(null, null)} neu />
     </>
   );
